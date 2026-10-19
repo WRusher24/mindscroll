@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { clientIp, createSession, destroySession, hashPassword, rateLimit, verifyPassword } from "@/lib/auth";
+import { authConfigProblem, clientIp, createSession, destroySession, hashPassword, rateLimit, verifyPassword } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { loginSchema, registerSchema } from "@/lib/validation";
@@ -11,7 +11,10 @@ export type AuthState = { error?: string; fields?: { name?: string; email?: stri
 
 const GENERIC_LOGIN_ERROR = "Incorrect email or password.";
 
+const CONFIG_ERROR = "The server isn't configured correctly yet (a required environment variable such as AUTH_SECRET is missing). If you run this site, see DEPLOYS_GUIDE.md.";
+
 export async function registerAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  if (authConfigProblem()) return { error: CONFIG_ERROR };
   const raw = { name: String(formData.get("name") ?? ""), email: String(formData.get("email") ?? ""), password: String(formData.get("password") ?? "") };
   const fields = { name: raw.name, email: raw.email };
   const parsed = registerSchema.safeParse(raw);
@@ -36,6 +39,7 @@ export async function registerAction(_prev: AuthState, formData: FormData): Prom
 }
 
 export async function loginAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  if (authConfigProblem()) return { error: CONFIG_ERROR };
   const raw = { email: String(formData.get("email") ?? ""), password: String(formData.get("password") ?? "") };
   const fields = { email: raw.email };
   const parsed = loginSchema.safeParse(raw);

@@ -188,6 +188,7 @@ from feeds where consecutive_failures > 0 order by consecutive_failures desc;
 
 | Symptom | Likely cause and fix |
 | --- | --- |
+| "This page couldn't load" right after creating an account | `AUTH_SECRET` is missing in Vercel (add it, then **Redeploy**; env var changes only apply to new deployments). Check **Deployments → Logs** for the exact message. |
 | Build fails with `DATABASE_URL is not set` | The variable is missing in the Vercel project (or not enabled for this environment). |
 | Build fails during migration with a connection/handshake error | Check the connection string is complete and includes `sslmode=require`; make sure the Neon project is not suspended or deleted. |
 | Everyone is signed out after a deploy | `AUTH_SECRET` changed. Restore the previous value. |

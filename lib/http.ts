@@ -18,12 +18,22 @@ export function apiError(message: string, status = 400) {
 function sameOrigin(req: Request): boolean {
   const origin = req.headers.get("origin");
   if (!origin) return true; // non-browser clients (curl, cron) cannot carry a victim's cookies
-  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  let originHost: string;
   try {
-    return new URL(origin).host === host;
+    originHost = new URL(origin).host;
   } catch {
     return false;
   }
+  // Behind a proxy the public host may arrive as Host or X-Forwarded-Host; on Vercel the same deployment
+  // is also reachable through its stable aliases, which are exposed to the app as environment variables.
+  const allowed = [
+    req.headers.get("host"),
+    req.headers.get("x-forwarded-host"),
+    process.env.VERCEL_URL,
+    process.env.VERCEL_BRANCH_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  ].filter(Boolean);
+  return allowed.some((host) => host === originHost);
 }
 
 type Ctx<P> = { params: Promise<P> };

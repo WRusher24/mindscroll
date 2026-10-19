@@ -23,6 +23,16 @@ function secret(): string {
   return value;
 }
 
+/** Returns an operator-facing message when required auth configuration is missing, otherwise null. */
+export function authConfigProblem(): string | null {
+  try {
+    secret();
+    return null;
+  } catch (error) {
+    return error instanceof Error ? error.message : "Authentication is not configured";
+  }
+}
+
 function hashToken(token: string): string {
   return createHmac("sha256", secret()).update(token).digest("hex");
 }

@@ -32,8 +32,9 @@ export function TopicPicker({ topics, welcome }: { topics: TopicWithState[]; wel
       toast({ message: "Topics updated" });
       router.push("/feed");
       router.refresh();
-    } catch {
-      toast({ message: "Couldn't save your topics. Please try again.", tone: "error" });
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "";
+      toast({ message: `Couldn't save your topics${reason ? ` (${reason})` : ""}. Please try again.`, tone: "error", duration: 9000 });
       setSaving(false);
     }
   };
