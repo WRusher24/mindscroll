@@ -26,7 +26,6 @@ const csp = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
-  serverExternalPackages: ["linkedom", "sanitize-html", "rss-parser"],
   async headers() {
     const headers = process.env.NODE_ENV === "production" ? [...securityHeaders, { key: "Content-Security-Policy", value: csp }] : securityHeaders;
     return [{ source: "/:path*", headers }];

@@ -14,7 +14,7 @@ This guide takes you from a fresh clone to a running production deployment on **
 | Feed ingestion | `/api/cron/ingest` — fetches every active RSS/Atom feed, extracts readable text |
 | Scheduling | Vercel Cron (daily backstop) and/or the included GitHub Actions workflow (every 30 min) |
 
-**Requirements:** Node.js 20.9 or newer (22 recommended), npm, a GitHub account, a Vercel account, a Neon account.
+**Requirements:** Node.js 22 (pinned in `package.json`; Vercel uses it automatically), npm, a GitHub account, a Vercel account, a Neon account.
 
 ---
 
